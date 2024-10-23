@@ -3,15 +3,15 @@ import pymupdf # used to convert pdf to text so python can read the data
 from pathlib import Path # used to find the path of the files needed
 import json # used to write data to json file when parsing and calculations are complete
 import logging # used to create log file, and send logs to it for future viewing and use
+from pathing import output
 
-logging.basicConfig(level=logging.DEBUG, filename="/home/barak/lpthw/ex/ex52/logs/pdf_etl.log", filemode="w",
+logging.basicConfig(level=logging.DEBUG, filename=f"{output.log_dir}/pdf_etl.log", filemode="w",
                     format="%(asctime)s - %(levelname)s - %(message)s")
 
 paths = [] # file paths are saved here
 data_list = []
-
 # sets up the file paths by searching the root provided for the pdf's, saves their paths to a list
-root = "/home/barak/lpthw/ex/ex52/PDFs/" # the root path for Path() to search
+root = output.pdf_dir # the root path for Path() to search
 for path in Path(root).glob("**/*.pdf"): # for loop using Path().glob to search for pdf's only in set root
     paths.append(path) # saving filepaths to list
 
@@ -158,8 +158,8 @@ def main():
         call.clean_text()
         call.get_data()
         call.calculate_and_save()
-    prefered_path ="/home/barak/lpthw/ex/ex52/Reports/"
-    with open(f'{prefered_path}ttb_stats.json', 'w') as datadump:
+    prefered_path = output.report_dir
+    with open(f'{prefered_path}/ttb_stats.json', 'w') as datadump:
         json.dump(data_list, datadump, indent=1)
 
 if __name__ == "__main__":

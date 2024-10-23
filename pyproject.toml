@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=75.2.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bg.web2pdf-etl"
+version = "0.1.0"
+authors = [
+    { name="Barak Gardner", email = "gardnerbarak@gmail.com"},
+]
+description = "A tool that scrapes PDF's from the lpthw website and extracts data from them."
+readme = "README.md"
+requires-python =">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests",
+    "bs4",
+    "pymupdf",
+]
+
+[project.urls]
+Homepage = "https://github.com/BarakGardner/bg.web2pdf-etl"
+Issues = "https://github.com/BarakGardner/bg.web2pdf-etl/issues"
+

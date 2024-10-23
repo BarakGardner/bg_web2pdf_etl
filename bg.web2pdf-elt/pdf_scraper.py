@@ -24,24 +24,30 @@ To accomplis this problem you'll need some basics:
 
 #imports here
 import requests
+import pathlib
+from pathing import output # this is my path creation/check file
 from bs4 import BeautifulSoup
-import os
+
 
 class GetPDFs():
     def __init__(self):
+        self.home_dir = output.main_dir
         self.ttb_url = 'https://learncodethehardway.com/setup/python/ttb/' # url for requests to open
-        self.path = '/home/barak/lpthw/ex/ex52/ttb_page.html' # path and filename to save webpage to
+        self.html_path = pathlib.Path(f'{output.html_dir}/ttb_page.html') # path and filename to save webpage to
+        self.pdf_dir = output.pdf_dir
+        self.report = pathlib.Path(f'{output.report_dir}/ttb_stats.json')
+
 
     def scrape(self):
-        if not os.path.exists('ttb_stats.json'): # checking for ttb_stats.json
-            with open(self.path, 'w') as f: # using with to open/create file in write mode as f
+        if not self.report.exists(): # checking for ttb_stats.json
+            with open(self.html_path, 'w') as f: # using with to open/create file in write mode as f
                 resp = requests.get(self.ttb_url) # using requests lib to access the url
                 body = resp.text # variable set as output of the webpage code
                 soup = BeautifulSoup(body, 'html5lib') # takes body (aka webpage html code) and uses html5lib parser on it
                 f.write(soup.prettify()) # writing that code to html file using bs4 prettify to make it more readable (as this particular webpage is a oneliner so prettify formats it so it looks more normal)
 
         else: 
-            with open(self.path) as f: # using with to open file
+            with open(self.html_path) as f: # using with to open file
                 body = f.read() # reading html file
                 soup = BeautifulSoup(body, 'html5lib') # takes body (aka the written html file of the website code) and uses html5lib parser to read it
 
@@ -50,12 +56,14 @@ class GetPDFs():
             if link.endswith('.pdf'): # checks if href item endswith '.pdf'
                 file_link = link[18:] # slices first part of link off (it isn't needed and if it is left there it will throw errors)
                 file_name = link[47:] # slices last part of link off to be used as the filename when downloading
-                if not os.path.exists(f'/home/barak/lpthw/ex/ex52/PDFs/{file_name}'):
+                test_path = pathlib.Path(f'{self.pdf_dir}/{file_name}')
+                print(test_path)
+                if not test_path.exists():
                     pdf_url = self.ttb_url + file_link # combines the website link with the pdf link so it can be called
                     pdf_response = requests.get(pdf_url) # calling pdf url to get the pdf data from the webpage
 
                     if pdf_response.status_code == 200: # checks if the response code is good (200 == ok)
-                        with open(f'/home/barak/lpthw/ex/ex52/PDFs/{file_name}', 'wb') as f: # uses with to create and open the file in the correct directory, using file name to make the name of the file. file is opened in write, binary mode as f
+                        with open(f'{self.pdf_dir}/{file_name}', 'wb') as f: # uses with to create and open the file in the correct directory, using file name to make the name of the file. file is opened in write, binary mode as f
                             f.write(pdf_response.content) # writing response content to opened file
                         print('PDF downloaded successfully.') # letting the user know file was downloaded successfully
                     else: # this will run if above if statement returns false
