@@ -10,7 +10,7 @@ authors = [
 ]
 description = "A tool that scrapes PDF's from the lpthw website and extracts data from them."
 readme = "README.md"
-requires-python =">=3.12"
+requires-python =">=3.12.7"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -25,4 +25,8 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/BarakGardner/bg.web2pdf-etl"
 Issues = "https://github.com/BarakGardner/bg.web2pdf-etl/issues"
+
+
+[project.scripts]
+start = "cli:main"
 

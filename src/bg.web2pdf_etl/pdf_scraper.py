@@ -25,7 +25,7 @@ To accomplis this problem you'll need some basics:
 #imports here
 import requests
 import pathlib
-from pathing import output # this is my path creation/check file
+from .pathing import output # this is my path creation/check file
 from bs4 import BeautifulSoup
 
 
