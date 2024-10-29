@@ -5,8 +5,7 @@ import json # used to write data to json file when parsing and calculations are 
 import logging # used to create log file, and send logs to it for future viewing and use
 from .pathing import output
 
-logging.basicConfig(level=logging.DEBUG, filename=f"{output.log_dir}/pdf_etl.log", filemode="w",
-                    format="%(asctime)s - %(levelname)s - %(message)s")
+
 
 paths = [] # file paths are saved here
 data_list = []
@@ -152,6 +151,8 @@ class GetFileData():
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG, filename=f"{output.log_dir}/pdf_etl.log", filemode="w",
+                    format="%(asctime)s - %(levelname)s - %(message)s")
     for p in paths:
         call = GetFileData(p)
         call.get_text()

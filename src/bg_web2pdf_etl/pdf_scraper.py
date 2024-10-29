@@ -56,9 +56,8 @@ class GetPDFs():
             if link.endswith('.pdf'): # checks if href item endswith '.pdf'
                 file_link = link[18:] # slices first part of link off (it isn't needed and if it is left there it will throw errors)
                 file_name = link[47:] # slices last part of link off to be used as the filename when downloading
-                test_path = pathlib.Path(f'{self.pdf_dir}/{file_name}')
-                print(test_path)
-                if not test_path.exists():
+                pdf_path = pathlib.Path(f'{self.pdf_dir}/{file_name}')
+                if not pdf_path.exists():
                     pdf_url = self.ttb_url + file_link # combines the website link with the pdf link so it can be called
                     pdf_response = requests.get(pdf_url) # calling pdf url to get the pdf data from the webpage
 

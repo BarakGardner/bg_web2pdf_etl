@@ -3,8 +3,8 @@ requires = ["setuptools>=75.2.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bg.web2pdf-etl"
-version = "0.1.0"
+name = "bg_web2pdf_etl"
+version = "1.0.0"
 authors = [
     { name="Barak Gardner", email = "gardnerbarak@gmail.com"},
 ]
@@ -20,6 +20,7 @@ dependencies = [
     "requests",
     "bs4",
     "pymupdf",
+    "html5lib",
 ]
 
 [project.urls]
@@ -28,5 +29,5 @@ Issues = "https://github.com/BarakGardner/bg.web2pdf-etl/issues"
 
 
 [project.scripts]
-start = "cli:main"
+start_etl = "bg_web2pdf_etl.cli:main"
 

@@ -1,6 +1,6 @@
+from . import pathing
 from . import pdf_etl as etl
 from . import pdf_scraper as scraper
-from . import pathing
 
 def main():
     print("initializing file path check/creation")
