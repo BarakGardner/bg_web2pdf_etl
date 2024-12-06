@@ -3,7 +3,7 @@ import pymupdf # used to convert pdf to text so python can read the data
 from pathlib import Path # used to find the path of the files needed
 import json # used to write data to json file when parsing and calculations are complete
 import logging # used to create log file, and send logs to it for future viewing and use
-from .pathing import output
+from pathing import output
 
 
 

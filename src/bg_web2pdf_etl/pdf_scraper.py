@@ -25,7 +25,8 @@ To accomplis this problem you'll need some basics:
 #imports here
 import requests
 import pathlib
-from .pathing import output # this is my path creation/check file
+import json
+from pathing import output # this is my path creation/check file
 from bs4 import BeautifulSoup
 
 
@@ -37,15 +38,18 @@ class GetPDFs():
         self.pdf_dir = output.pdf_dir
         self.report = pathlib.Path(f'{output.report_dir}/ttb_stats.json')
 
+    def get_headers(self):
+        r = requests.get(self.ttb_url).headers
+        self.last_mod = r['Last-Modified']
+        self.etag = r['Etag']
 
     def scrape(self):
-        if not self.report.exists(): # checking for ttb_stats.json
+        if not self.html_path.exists(): # checking for ttb_page.html
             with open(self.html_path, 'w') as f: # using with to open/create file in write mode as f
                 resp = requests.get(self.ttb_url) # using requests lib to access the url
                 body = resp.text # variable set as output of the webpage code
                 soup = BeautifulSoup(body, 'html5lib') # takes body (aka webpage html code) and uses html5lib parser on it
                 f.write(soup.prettify()) # writing that code to html file using bs4 prettify to make it more readable (as this particular webpage is a oneliner so prettify formats it so it looks more normal)
-
         else: 
             with open(self.html_path) as f: # using with to open file
                 body = f.read() # reading html file
@@ -60,6 +64,10 @@ class GetPDFs():
                 if not pdf_path.exists():
                     pdf_url = self.ttb_url + file_link # combines the website link with the pdf link so it can be called
                     pdf_response = requests.get(pdf_url) # calling pdf url to get the pdf data from the webpage
+                    pdf_etag = pdf_response.headers['Etag']
+                    with open(f'{output.log_dir}/{file_name.strip('.pdf')}_etag.json', 'w') as f:
+                        json.dump(pdf_etag, f)
+
 
                     if pdf_response.status_code == 200: # checks if the response code is good (200 == ok)
                         with open(f'{self.pdf_dir}/{file_name}', 'wb') as f: # uses with to create and open the file in the correct directory, using file name to make the name of the file. file is opened in write, binary mode as f
@@ -68,8 +76,11 @@ class GetPDFs():
                     else: # this will run if above if statement returns false
                         print('Error:', pdf_response.status_code) # prints the request.get status code to let the user know why the above code didn't run
                 else:
-                    print('File already exists, continuing to next file')
-
+                    print('File already exists, checking for changes to file')
+                    check_response = requests.get(pdf_url).headers['Etag']
+                    for file in output.log_dir:
+                        if file.endswith('.json'):
+                            pass
 def main():
     get_pdfs = GetPDFs()
     get_pdfs.scrape()
