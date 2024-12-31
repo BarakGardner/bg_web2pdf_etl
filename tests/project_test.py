@@ -1,9 +1,11 @@
-import json
+from pathlib import Path
+import datetime
 
+pdf_path = Path("/home/barak/Desktop/web2pdf-etl_output's/PDFs")
+print(pdf_path)
 
-filepath = "/home/barak/Desktop/web2pdf-etl_output's/logs/"
-
-for file in filepath:
-    with open(file,'r') as f:
-        data = json.load(f)
-        print(data)
+for file in pdf_path.iterdir():
+    metadata = file.stat().st_ctime
+    c_time = datetime.datetime.fromtimestamp(metadata)
+    print(metadata)
+    print(c_time)

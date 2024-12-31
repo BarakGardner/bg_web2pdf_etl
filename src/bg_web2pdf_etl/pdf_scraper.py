@@ -61,13 +61,9 @@ class GetPDFs():
                 file_link = link[18:] # slices first part of link off (it isn't needed and if it is left there it will throw errors)
                 file_name = link[47:] # slices last part of link off to be used as the filename when downloading
                 pdf_path = pathlib.Path(f'{self.pdf_dir}/{file_name}')
+                pdf_url = self.ttb_url + file_link # combines the website link with the pdf link so it can be called
                 if not pdf_path.exists():
-                    pdf_url = self.ttb_url + file_link # combines the website link with the pdf link so it can be called
                     pdf_response = requests.get(pdf_url) # calling pdf url to get the pdf data from the webpage
-                    pdf_etag = pdf_response.headers['Etag']
-                    with open(f'{output.log_dir}/{file_name.strip('.pdf')}_etag.json', 'w') as f:
-                        json.dump(pdf_etag, f)
-
 
                     if pdf_response.status_code == 200: # checks if the response code is good (200 == ok)
                         with open(f'{self.pdf_dir}/{file_name}', 'wb') as f: # uses with to create and open the file in the correct directory, using file name to make the name of the file. file is opened in write, binary mode as f
@@ -77,10 +73,11 @@ class GetPDFs():
                         print('Error:', pdf_response.status_code) # prints the request.get status code to let the user know why the above code didn't run
                 else:
                     print('File already exists, checking for changes to file')
-                    check_response = requests.get(pdf_url).headers['Etag']
-                    for file in output.log_dir:
-                        if file.endswith('.json'):
-                            pass
+                    mtdata = pdf_path.stat().st_ctime
+                    lastmod_response = requests.get(pdf_url)
+                    lastmod_headers = lastmod_response.headers
+                    lastmod = lastmod_headers["Last-Modified"]
+                    print(lastmod)
 def main():
     get_pdfs = GetPDFs()
     get_pdfs.scrape()
